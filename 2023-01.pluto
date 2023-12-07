@@ -1,0 +1,10 @@
+local data = [[1abc2
+pqr3stu8vwx
+a1b2c3d4e5f
+treb7uchet]]
+
+local sum = 0
+for data:split("\n") as line do
+    sum += line[line:find("%d")] * 10 + line[line:rfind("%d")]
+end
+print(sum)

@@ -1,0 +1,32 @@
+local data = [[two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen]]
+
+local function find_digit(f, str)
+    local words = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" }
+    local best_beg, best_end = f(str, "%d")
+    best_beg ??= (f == string.find ? 69000 : -69000)
+    for words as word do
+        local beg, _end = f(str, word)
+        if beg then
+            if f == string.find ? best_beg > beg : best_beg < beg then
+                best_beg, best_end = beg, _end
+            end
+        end
+    end
+    local sub = str:sub(best_beg, best_end)
+    if idx := words:contains(sub) then
+        return idx
+    end
+    return tonumber(sub)
+end
+
+local sum = 0
+for data:split("\n") as line do
+    sum += find_digit(string.find, line) * 10 + find_digit(string.rfind, line)
+end
+print(sum)
