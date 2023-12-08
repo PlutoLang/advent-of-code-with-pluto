@@ -1,0 +1,57 @@
+local data = [[467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598..]]
+
+data = data:split("\n") -- Pluto has string indexing, so this is all we need to have a table that we can access like [y][x].
+
+local function is_symbol(x, y)
+	if x == 0 or y == 0 or y == #data + 1 or x == #data[y] + 1 then
+		return false
+	end
+	local value = data[y][x]
+	return value ~= "." and value:match("%d") == nil
+end
+
+local function is_cell_adjacent_to_symbol(x, y)
+	return is_symbol(x - 1, y - 1)
+		or is_symbol(x, y - 1)
+		or is_symbol(x + 1, y - 1)
+		or is_symbol(x - 1, y)
+		or is_symbol(x + 1, y)
+		or is_symbol(x - 1, y + 1)
+		or is_symbol(x, y + 1)
+		or is_symbol(x + 1, y + 1)
+end
+
+local num
+local adj = false
+local sum = 0
+for y = 1, #data do
+	for x = 1, #data[y] do
+		if data[y][x]:match("%d") then
+			if num then
+				num *= 10
+				num += data[y][x] - '0'
+			else
+				num = data[y][x]
+			end
+			if not adj and is_cell_adjacent_to_symbol(x, y) then
+				adj = true
+			end
+		else
+			if num and adj then
+				sum += num
+			end
+			num = nil
+			adj = false
+		end
+	end
+end
+print(sum)
