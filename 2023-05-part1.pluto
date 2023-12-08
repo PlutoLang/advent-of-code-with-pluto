@@ -1,0 +1,56 @@
+local data = [[seeds: 79 14 55 13
+
+seed-to-soil map:
+50 98 2
+52 50 48
+
+soil-to-fertilizer map:
+0 15 37
+37 52 2
+39 0 15
+
+fertilizer-to-water map:
+49 53 8
+0 11 42
+42 0 7
+57 7 4
+
+water-to-light map:
+88 18 7
+18 25 70
+
+light-to-temperature map:
+45 77 23
+81 45 19
+68 64 13
+
+temperature-to-humidity map:
+0 69 1
+1 0 69
+
+humidity-to-location map:
+60 56 37
+56 93 4]]
+
+data = data:split("\n\n")
+local seeds = data:remove(1):split(": ")[2]:split(" "):map(tonumber)
+data:map(function(m)
+	local t = m:split("\n")
+	t:remove(1)
+	return t:map(|n| -> n:split(" "):map(tonumber))
+end)
+local min = 6900000000000
+for seeds as seed do
+	for data as m do
+		for m as t do
+			local _end = t[2] + t[3]
+			if seed >= t[2] and seed <= _end then
+				seed -= t[2]
+				seed += t[1]
+				break
+			end
+		end
+	end
+	min = math.min(min, seed)
+end
+print(min)
