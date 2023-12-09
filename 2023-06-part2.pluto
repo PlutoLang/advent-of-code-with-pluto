@@ -1,0 +1,17 @@
+local data = [[Time:      7  15   30
+Distance:  9  40  200]]
+
+local times = { tonumber({ data:split("\n")[1]:split(": ")[2]:gsub(" ", "") }[1]) }
+local distances = { tonumber({ data:split("\n")[2]:split(": ")[2]:gsub(" ", "") }[1]) }
+
+local answer = 1
+for i = 1, #times do
+   local ways_to_win = 0
+   for t = 1, times[i] - 1 do
+      if t * (times[i] - t) > distances[i] then
+         ++ways_to_win
+      end
+   end
+   answer *= ways_to_win
+end
+print(answer)
