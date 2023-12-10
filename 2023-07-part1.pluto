@@ -1,0 +1,121 @@
+local data = [[2345J 3
+2345A 1
+J345A 2
+32T3K 5
+Q2KJJ 13
+T3T3J 17
+KTJJT 34
+KK677 7
+T3Q33 11
+T55J5 29
+QQQJA 31
+Q2Q2Q 19
+2JJJJ 53
+2AAAA 23
+JJJJ2 41
+JAAAA 43
+AAAAJ 59
+JJJJJ 37
+AAAAA 61]]
+
+local function parse_hand(str)
+    return str:split(""):map(function(c)
+        return table.contains({ '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A' }, c)
+    end)
+end
+
+data = data:split("\n"):map(function(line)
+    local arr = line:split(" ")
+    arr[1] = parse_hand(arr[1])
+    arr[2] = tonumber(arr[2])
+    return arr
+end)
+
+local function get_hand_rank(hand)
+    local counts = {}
+    for hand as digit do
+        counts[digit] = (counts[digit] ?? 0) + 1
+    end
+
+    -- five of a kind
+    for counts as count do
+        if count == 5 then
+            return 7
+        end
+    end
+
+    -- four of a kind
+    for counts as count do
+        if count == 4 then
+            return 6
+        end
+    end
+
+    -- full house
+    for counts as count do
+        if count == 3 then
+            for counts as count2 do
+                if count2 == 2 then
+                    return 5
+                end
+            end
+        end
+    end
+
+    -- three of a kind
+    for counts as count do
+        if count == 3 then
+            return 4
+        end
+    end
+
+    -- two pair
+    for digit, count in counts do
+        if count == 2 then
+            for digit2, count2 in counts do
+                if count2 == 2 and digit2 ~= digit then
+                    return 3
+                end
+            end
+        end
+    end
+
+    -- one pair
+    for counts as count do
+        if count == 2 then
+            return 2
+        end
+    end
+
+    -- high card
+    return 1
+end
+assert(get_hand_rank(parse_hand("AAAAA")) == 7)
+assert(get_hand_rank(parse_hand("AA8AA")) == 6)
+assert(get_hand_rank(parse_hand("23332")) == 5)
+assert(get_hand_rank(parse_hand("TTT98")) == 4)
+assert(get_hand_rank(parse_hand("23432")) == 3)
+assert(get_hand_rank(parse_hand("A23A4")) == 2)
+assert(get_hand_rank(parse_hand("23456")) == 1)
+
+table.sort(data, function(a, b)
+    local a_rank = get_hand_rank(a[1])
+    local b_rank = get_hand_rank(b[1])
+    if a_rank == b_rank then
+        for i = 1, #a[1] do
+            if a[1][i] < b[1][i] then
+                return true
+            end
+            if a[1][i] > b[1][i] then
+                return false
+            end
+        end
+    end
+    return a_rank < b_rank
+end)
+
+local winnings = 0
+for i, hand in data do
+    winnings += hand[2] * i
+end
+print(winnings)
