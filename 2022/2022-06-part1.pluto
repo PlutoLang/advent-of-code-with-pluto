@@ -1,0 +1,26 @@
+local data = [[bvwbjplbgvbhsrlpgdmjqwftvncz]]
+
+local function hashlen(t)
+    local a = 0
+    for t as _ do ++a end
+    return a
+end
+
+local function to_counts(str)
+    local counts = {}
+    for str as c do
+        counts[c] = (counts[c] ?? 0) + 1
+    end
+    return counts
+end
+
+local function is_marker(str)
+    return hashlen(to_counts(str:split(""))) == #str
+end
+
+for i = 1, #data do
+    if is_marker(data:sub(i, i + 3)) then
+        print(i + 3)
+        break
+    end
+end
