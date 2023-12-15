@@ -1,0 +1,32 @@
+local data = [[RL
+
+AAA = (BBB, CCC)
+BBB = (DDD, EEE)
+CCC = (ZZZ, GGG)
+DDD = (DDD, DDD)
+EEE = (EEE, EEE)
+GGG = (GGG, GGG)
+ZZZ = (ZZZ, ZZZ)]]
+
+local sequence = data:split("\n\n")[1]
+local nodes = {}
+for data:split("\n\n")[2]:split("\n") as line do
+    local arr = line:gsub("%)", ""):split(" = (")
+    nodes[arr[1]] = arr[2]:split(", ")
+end
+
+local cur = "AAA"
+local steps = 0
+while true do
+    for i = 1, #sequence do
+        --print($"At {cur}, taking a turn {sequence[i]}")
+        local link = sequence[i] == "L" ? 1 : 2
+        cur = nodes[cur][link]
+        ++steps
+        if cur == "ZZZ" then
+            goto done
+        end
+    end
+end
+::done::
+print(steps)
