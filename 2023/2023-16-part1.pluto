@@ -1,0 +1,78 @@
+local data = [[.|...\....
+|.-.\.....
+.....|-...
+........|.
+..........
+.........\
+..../.\\..
+.-.-/..|..
+.|....-|.\
+..//.|....]]
+
+data = data:split("\n")
+
+local energised = {}
+data:foreach(function(line) energised[#energised + 1] = line:split("") end)
+
+local function follow_beam(x, y, mx, my, depth = 0)
+    while true do
+        ++depth
+        if depth == 1000 then -- Yeah, this is bad. And it ends up being very slow. But it works.
+            return
+        end
+
+        x += mx
+        y += my
+
+        if x == 0 or y == 0 or y == #data + 1 or x == #data[y] + 1 then
+            return
+        end
+
+        energised[y][x] = "#"
+
+        switch data[y][x] do
+            case "|":
+                if mx ~= 0 then
+                    follow_beam(x, y, 0, -1, depth)
+                    follow_beam(x, y, 0, 1, depth)
+                    return
+                end
+                break
+            case "-":
+                if my ~= 0 then
+                    follow_beam(x, y, -1, 0, depth)
+                    follow_beam(x, y, 1, 0, depth)
+                    return
+                end
+                break
+            case "\\":
+                -- 1, 0 -> 0, 1
+                -- -1, 0 -> 0, -1
+                -- 0, 1 -> 1, 0
+                -- 0, -1 -> -1, 0
+                mx, my = my, mx
+                break
+            case "/":
+                -- 1, 0 -> 0, -1
+                -- -1, 0 -> 0, 1
+                -- 0, 1 -> -1, 0
+                -- 0, -1 -> 1, 0
+                mx, my = -my, -mx
+                break
+        end
+    end
+end
+
+table.reduce = function(t, f)
+    local a = 0
+    for t as v do
+        a = f(a, v)
+    end
+    return a
+end
+
+follow_beam(0, 1, 1, 0)
+
+--print(energised:map(|line| -> line:concat("")):concat("\n"))
+
+print(energised:reduce(|a, row| -> a + row:reduce(|a2, v| -> a2 + (v == "#" ? 1 : 0))))
