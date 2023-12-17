@@ -1,0 +1,26 @@
+local data = [[1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000]]
+
+table.reduce = function(t, f)
+    local a = 0
+    for t as v do
+        a = f(a, v)
+    end
+    return a
+end
+
+local elves = data:split("\n\n"):map(|elf| -> elf:split("\n"):map(tonumber):reduce(|a, v| -> a + v))
+table.sort(elves, |a, b| -> b < a)
+print({ elves:unpack(1, 3) }:reduce(|a, v| -> a + v))

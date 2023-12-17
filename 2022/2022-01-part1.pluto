@@ -1,0 +1,24 @@
+local data = [[1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000]]
+
+table.reduce = function(t, f)
+    local a = 0
+    for t as v do
+        a = f(a, v)
+    end
+    return a
+end
+
+print(data:split("\n\n"):map(|elf| -> elf:split("\n"):map(tonumber):reduce(|a, v| -> a + v)):reduce(math.max))
