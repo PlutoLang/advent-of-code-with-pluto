@@ -1,0 +1,13 @@
+local data = "rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7"
+
+table.reduce = function(t, f)
+    local a = 0
+    for t as v do
+        a = f(a, v)
+    end
+    return a
+end
+
+local HASH = |str| -> str:split(""):reduce(|a, v| -> (a + v:byte()) * 17 % 256)
+
+print(data:split(","):reduce(|a, v| -> a + HASH(v)))
