@@ -1,0 +1,52 @@
+local data = [[A Y
+B X
+C Z]]
+
+enum begin
+    ROCK = 0,
+    PAPER,
+    SCISSORS
+end
+
+enum begin
+    WIN = 6,
+    TIE = 3,
+    LOSE = 0
+end
+
+local function match_result(us, them)
+    if (us + 1) % 3 == them then
+        return LOSE
+    end
+    if us == them then
+        return TIE
+    end
+    return WIN
+end
+
+map_opponent_choice = |c| -> switch c do
+    case "A" -> ROCK
+    case "B" -> PAPER
+    case "C" -> SCISSORS
+end
+
+map_my_choice = |c| -> switch c do
+    case "X" -> ROCK
+    case "Y" -> PAPER
+    case "Z" -> SCISSORS
+end
+
+table.reduce = function(t, f)
+    local a = 0
+    for t as v do
+        a = f(a, v)
+    end
+    return a
+end
+
+data:split("\n"):map(function(line)
+    line:split(" ") -> arr
+    arr[1] |> map_opponent_choice -> opponent_choice
+    arr[2] |> map_my_choice -> my_choice
+    return match_result(my_choice, opponent_choice) + (my_choice + 1)
+end):reduce(|a, b| -> a + b) |> print
