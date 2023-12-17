@@ -1,0 +1,37 @@
+local data = [[0 3 6 9 12 15
+1 3 6 10 15 21
+10 13 16 21 30 45]]
+
+table.allsatisfy = function(t, f)
+    for t as v do
+        if not f(v) then
+            return false
+        end
+    end
+    return true
+end
+
+table.reduce = function(t, f)
+    local a = 0
+    for t as v do
+        a = f(a, v)
+    end
+    return a
+end
+
+local function next_in_sequence(sequence)
+    local diffs = {}
+    for i = 1, #sequence - 1 do
+        diffs[i] = sequence[i+1] - sequence[i]
+    end
+    if diffs:allsatisfy(|diff| -> diff == 0) then
+        return sequence[1]
+    end
+    return sequence[#sequence] + next_in_sequence(diffs)
+end
+
+local sequences = data:split("\n")
+sequences:map(|sequence| -> sequence:split(" "):map(tonumber))
+print(sequences:reduce(function(accum, sequence)
+    return accum + next_in_sequence(sequence)
+end))
