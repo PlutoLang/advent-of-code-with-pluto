@@ -1,0 +1,90 @@
+local data = [[R 6 (#70c710)
+D 5 (#0dc571)
+L 2 (#5713f0)
+D 2 (#d2c081)
+R 2 (#59c680)
+D 2 (#411b91)
+L 5 (#8ceee2)
+U 2 (#caa173)
+L 1 (#1b58a2)
+U 2 (#caa171)
+R 2 (#7807d2)
+U 3 (#a77fa3)
+L 2 (#015232)
+U 2 (#7a21e3)]]
+
+local boundary <const> = 300 -- Because AoC loves negative numbers, put padding on the top & left.
+
+x, y = boundary, boundary
+local width, height = boundary, boundary
+data:split("\n"):foreach(function(line)
+    local arr = line:split(" ")
+    switch arr[1] do
+        case "R": x += arr[2] break
+        case "D": y += arr[2] break
+        case "L": x -= arr[2] break
+        case "U": y -= arr[2] break
+    end
+    width = math.max(width, x)
+    height = math.max(height, y)
+end)
+
+local grid = {}
+for y = 1, height do
+    local row = {}
+    for x = 1, width do
+        row[#row + 1] = "."
+    end
+    grid[#grid + 1] = row
+end
+
+x, y = boundary, boundary
+data:split("\n"):foreach(function(line)
+    local arr = line:split(" ")
+    local _x, _y = x, y
+    switch arr[1] do
+        case "R": x += arr[2] break
+        case "D": y += arr[2] break
+        case "L": x -= arr[2] break
+        case "U": y -= arr[2] break
+    end
+    local stepx = (_x < x ? 1 : -1)
+    local stepy = (_y < y ? 1 : -1)
+    for i = _y, y, stepy do
+        for j = _x, x, stepx do
+            grid[i][j] = "#"
+        end
+    end
+end)
+
+--print(grid:map(|row| -> row:concat("")):concat("\n"))
+
+local function flood_fill(x, y)
+    local q = {
+        { x, y }
+    }
+    while true do
+        local n = table.remove(q, 1)
+        if n == nil then break end
+        if grid[n[1]][n[2]] ~= "#" then
+            grid[n[1]][n[2]] = "#"
+            table.insert(q, { n[1] + 1, n[2] })
+            table.insert(q, { n[1] - 1, n[2] })
+            table.insert(q, { n[1], n[2] + 1 })
+            table.insert(q, { n[1], n[2] - 1 })
+        end
+    end
+end
+flood_fill(boundary + 1, boundary + 1)
+
+--print(grid:map(|row| -> row:concat("")):concat("\n"))
+
+table.reduce = function(t, f)
+    local a = 0
+    for t as v do
+        a = f(a, v)
+    end
+    return a
+end
+
+print(grid:reduce(|a, row| -> a + row:reduce(|a2, c| -> a2 + (c == "#" ? 1 : 0))))
