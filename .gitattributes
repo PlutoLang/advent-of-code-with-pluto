@@ -1,5 +1,2 @@
 # Telling Github to treat Pluto files as if they're Lua so you at least have some syntax highlighting.
 *.pluto linguist-language=Lua
-
-# Some files in here are not valid Pluto (yet?) as they use left-to-right syntax. I've kept these as-is for the time being.
-*.plutoltr linguist-language=Lua

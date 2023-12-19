@@ -44,9 +44,9 @@ table.reduce = function(t, f)
     return a
 end
 
-data:split("\n"):map(function(line)
-    line:split(" ") -> arr
-    arr[1] |> map_opponent_choice -> opponent_choice
-    arr[2] |> map_my_choice -> my_choice
+print(data:split("\n"):map(function(line)
+    local arr = line:split(" ")
+    local opponent_choice = map_opponent_choice(arr[1])
+    local my_choice = map_my_choice(arr[2])
     return match_result(my_choice, opponent_choice) + (my_choice + 1)
-end):reduce(|a, b| -> a + b) |> print
+end):reduce(|a, b| -> a + b))
