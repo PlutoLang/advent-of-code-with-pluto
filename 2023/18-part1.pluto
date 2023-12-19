@@ -63,9 +63,7 @@ local function flood_fill(x, y)
     local q = {
         { x, y }
     }
-    while true do
-        local n = table.remove(q, 1)
-        if n == nil then break end
+    while n := table.remove(q, 1) do
         if grid[n[1]][n[2]] ~= "#" then
             grid[n[1]][n[2]] = "#"
             table.insert(q, { n[1] + 1, n[2] })
