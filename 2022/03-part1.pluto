@@ -1,0 +1,34 @@
+local data = [[vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw]]
+
+table.uniques = function(t)
+    local seen = {}
+    t:filter(function(x)
+        if seen:contains(x) then return false end
+        seen:insert(x)
+        return true
+    end)
+    return t
+end
+
+local get_priority = function(x)
+    x = x:byte()
+    if x >= 65 and x <= 90 then
+        return x - 65 + 27
+    end
+    return x - 96
+end
+assert(get_priority"a" == 1)
+assert(get_priority"z" == 26)
+assert(get_priority"A" == 27)
+assert(get_priority"Z" == 52)
+
+print(data:split("\n"):reduce(function(accum, rucksack)
+    local compartment_1 = rucksack:sub(1, #rucksack/2):split("")
+    local compartment_2 = rucksack:sub(#rucksack/2+1):split("")
+    return accum + compartment_1:filter(|x| -> compartment_2:contains(x)):reorder():uniques():reduce(|a, x| -> a + get_priority(x))
+end))
