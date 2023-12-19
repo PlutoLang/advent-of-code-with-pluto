@@ -1,0 +1,17 @@
+local data = [[2-4,6-8
+2-3,4-5
+5-7,7-9
+2-8,3-7
+6-6,4-6
+2-6,4-8]]
+
+local subsets = 0
+data:split("\n"):foreach(function(pair)
+    local ranges = pair:split(","):map(|range| -> range:split("-"):map(tonumber))
+    if ranges[1][1] <= ranges[2][1] and ranges[1][2] >= ranges[2][2] then
+        ++subsets
+    elseif ranges[2][1] <= ranges[1][1] and ranges[2][2] >= ranges[1][2] then
+        ++subsets
+    end
+end)
+print(subsets)

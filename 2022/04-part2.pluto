@@ -1,0 +1,26 @@
+local data = [[2-4,6-8
+2-3,4-5
+5-7,7-9
+2-8,3-7
+6-6,4-6
+2-6,4-8]]
+
+local function range(s, e)
+    local t = {}
+    for i = s, e do
+        t[#t + 1] = i
+    end
+    return t
+end
+
+local overlap = 0
+data:split("\n"):foreach(function(pair)
+    local ranges = pair:split(","):map(|r| -> range(table.unpack(r:split("-"):map(tonumber))))
+    for ranges[1] as v do
+        if ranges[2]:contains(v) then
+            ++overlap
+            break
+        end
+    end
+end)
+print(overlap)
