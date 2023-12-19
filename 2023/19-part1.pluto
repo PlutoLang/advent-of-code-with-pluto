@@ -42,6 +42,14 @@ local function check_condition(condition, part)
     return part[arr[1]] > tonumber(arr[2])
 end
 
+table.reduce = function(t, f)
+    local a = 0
+    for t as v do
+        a = f(a, v)
+    end
+    return a
+end
+
 print(parts:reduce(function(accum, part)
     local routine = "in"
     while routine ~= "A" and routine ~= "R" do
