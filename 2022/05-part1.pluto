@@ -1,0 +1,47 @@
+local data = [[    [D]    
+[N] [C]    
+[Z] [M] [P]
+ 1   2   3 
+
+move 1 from 2 to 1
+move 3 from 1 to 3
+move 2 from 2 to 1
+move 1 from 1 to 2]]
+
+data = data:split("\n\n"):map(|x| -> x:split("\n"))
+data[1]:remove(#data[1])
+
+local stacks = {}
+for data[1] as line do
+    local i = 1
+    while true do
+        local s, e = line:find("%[%a%]", i)
+        if s == nil then break end
+        stacks[(s-1)/4+1] ??= {}
+        local stack = stacks[(s-1)/4+1]
+        table.insert(stack, 1, line[s+1])
+        i = e
+    end
+end
+
+for data[2] as instruction do
+    local count, from, to = instruction:match("move (%d+) from (%d+) to (%d+)")
+    count = tonumber(count)
+    from = tonumber(from)
+    to = tonumber(to)
+    for _ = 1, count do
+        if item := stacks[from]:remove(#stacks[from]) then
+            stacks[to][#stacks[to] + 1] = item
+        end
+    end
+end
+
+table.reduce = function(t, f, x)
+    local a = x
+    for t as v do
+        a = f(a, v)
+    end
+    return a
+end
+
+print(stacks:reduce(|a, b| -> a .. b[#b], ""))
