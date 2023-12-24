@@ -1,0 +1,70 @@
+local data = [[$ cd /
+$ ls
+dir a
+14848514 b.txt
+8504156 c.dat
+dir d
+$ cd a
+$ ls
+dir e
+29116 f
+2557 g
+62596 h.lst
+$ cd e
+$ ls
+584 i
+$ cd ..
+$ cd ..
+$ cd d
+$ ls
+4060174 j
+8033020 d.log
+5626152 d.ext
+7214296 k]]
+
+local root = { __size = 0 }
+local cur = root
+
+data:split("\n"):foreach(function(line)
+	if line:sub(1, 2) == "$ " then
+		if line:sub(3, 4) == "cd" then
+			if line:sub(6) == ".." then
+				cur = cur.__parent
+			elseif line:sub(6) ~= "/" then
+				cur[line:sub(6)] ??= {}
+				cur[line:sub(6)].__parent = cur
+				cur = cur[line:sub(6)]
+				cur.__size ??= 0
+			end
+		end
+	else
+		local arr = line:split(" ")
+		if num := tonumber(arr[1]) then
+			--cur[arr[2]] = num
+			local dir = cur
+			while dir ~= nil do
+				dir.__size += num
+				dir = dir.__parent
+			end
+		end
+	end
+end)
+
+--print(dumpvar(root))
+
+local disk_free = 70000000 - root.__size
+local needed = 30000000 - disk_free
+local smallest = math.maxinteger
+local function accum(dir)
+	if dir.__size >= needed and dir.__size < smallest then
+		smallest = dir.__size
+	end
+	for k, v in dir do
+		if k:sub(1, 2) ~= "__" then
+			accum(v)
+		end
+	end
+end
+accum(root)
+
+print(smallest)
