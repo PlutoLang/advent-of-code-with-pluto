@@ -1,0 +1,11 @@
+local data = [[2x3x4
+1x1x10]]
+-- 48 + 14 = 48
+
+local function wrap(dims)
+	dims:map(tonumber)
+	local l, w, h = table.unpack(dims)
+	return l*w*h + ({2*(l+w), 2*(w+h), 2*(h+l)}):reduce(math.min, math.maxinteger)
+end
+
+print(data:split("\n"):reduce(|a, v| -> a + wrap(v:split("x"))))
