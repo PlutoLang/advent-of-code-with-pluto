@@ -1,0 +1,9 @@
+local data = "()())"
+local floor = 0
+for k, v in data:split"" do
+	floor += (v == "(" ? 1 : -1)
+	if floor == -1 then
+		print(k)
+		break
+	end
+end
