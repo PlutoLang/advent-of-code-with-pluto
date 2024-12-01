@@ -1,0 +1,22 @@
+local input = [[3   4
+4   3
+2   5
+1   3
+3   9
+3   3]]
+
+local left = {}
+local right = {}
+input:split("\n"):foreach(|line| -> do
+    local numbers = line:split("   ")
+    left:insert(tonumber(numbers[1]))
+    right:insert(tonumber(numbers[2]))
+end)
+left:sort()
+right:sort()
+
+local total = 0
+for i = 1, #left do
+    total += math.abs(left[i] - right[i])
+end
+print(total)

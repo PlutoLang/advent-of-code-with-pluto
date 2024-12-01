@@ -1,0 +1,21 @@
+local input = [[3   4
+4   3
+2   5
+1   3
+3   9
+3   3]]
+
+local left = {}
+local right = {}
+input:split("\n"):foreach(|line| -> do
+    local numbers = line:split("   ")
+    left:insert(tonumber(numbers[1]))
+    right[tonumber(numbers[2])] ??= 0
+    right[tonumber(numbers[2])] += 1
+end)
+
+local total = 0
+for left as number do
+    total += number * (right[number] ?? 0)
+end
+print(total)
