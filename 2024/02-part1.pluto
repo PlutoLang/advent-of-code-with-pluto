@@ -1,0 +1,28 @@
+local input = [[7 6 4 2 1
+1 2 7 8 9
+9 7 6 2 1
+1 3 2 4 5
+8 6 4 4 1
+1 3 6 7 9]]
+
+local nsafe = 0
+for input:split("\n") as report do
+    local dir
+    local prev
+    for report:split(" ") as level do
+        level = tonumber(level)
+        if prev then
+            local this_dir = (level > prev)
+            if dir ~= nil and this_dir ~= dir then
+                continue 2 -- not safe, go to next report
+            end
+            if math.abs(prev - level) < 1 or math.abs(prev - level) > 3 then
+                continue 2 -- not safe, next
+            end
+            dir = this_dir
+        end
+        prev = level
+    end
+    ++nsafe
+end
+print(nsafe)
