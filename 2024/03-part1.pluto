@@ -1,0 +1,11 @@
+local input = [===[xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))]===]
+
+local sum = 0
+local i = 1
+while i < #input do
+    local _s, e, a, b = input:find("mul%((%d+),(%d+)%)", i)
+    if not e then break end
+    sum += a * b
+    i = e
+end
+print(sum)
