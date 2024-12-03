@@ -9,10 +9,10 @@ while i < #input do
     local _s, e, a, b = input:find("mul%((%d+),(%d+)%)", i)
     if not e then break end
     if _do and _do < _s then
-        i += 4
+        i = _do + 4
         enable = true
     elseif _dont and _dont < _s then
-        i += 6
+        i = _dont + 6
         enable = false
     else
         if enable then
