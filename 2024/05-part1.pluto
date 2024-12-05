@@ -1,0 +1,55 @@
+local input = [[47|53
+97|13
+97|61
+97|47
+75|29
+61|13
+75|53
+29|13
+97|29
+53|29
+61|53
+97|53
+61|29
+47|13
+75|47
+97|75
+47|61
+75|61
+47|29
+75|13
+53|13
+
+75,47,61,53,29
+97,61,53,29,13
+75,29,13
+75,97,47,61,53
+61,13,29
+97,13,75,29,47]]
+
+local [ rules, updates ] = input:split("\n\n")
+
+local not_after = {}
+rules:split("\n"):foreach(|rule| -> do
+    local [ l, r ] = rule:split("|"):map(tonumber)
+    not_after[l] ??= {}
+    not_after[l][r] = true
+end)
+
+local sum = 0
+updates:split("\n"):foreach(|update| -> do
+    local pages = update:split(","):map(tonumber)
+    local before = {}
+    local bad = pages:foreach(|page| -> do
+        for before as lpage do
+            if not_after[page]?[lpage] then
+                return true
+            end
+        end
+        before:insert(page)
+    end)
+    if not bad then
+        sum += pages[#pages // 2 + 1]
+    end
+end)
+print(sum)
