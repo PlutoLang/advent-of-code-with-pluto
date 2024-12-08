@@ -8,6 +8,11 @@ local input = [[190: 10 19
 21037: 9 7 18 13
 292: 11 6 16 20]]
 
+local function concatenate_numbers(a, b)
+    local n = math.floor(math.log(b, 10)) + 1
+    return a * (10 ^ n) + b
+end
+
 local function evaluate_mutation(operands, mutation)
     local res = operands[1]
     for i = 2, #operands do
@@ -17,7 +22,7 @@ local function evaluate_mutation(operands, mutation)
         elseif op == 1 then
             res *= operands[i]
         else
-            res = tonumber(res..operands[i])
+            res = concatenate_numbers(res, operands[i])
         end
     end
     return res
