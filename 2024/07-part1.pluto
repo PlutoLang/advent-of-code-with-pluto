@@ -1,0 +1,41 @@
+local input = [[190: 10 19
+3267: 81 40 27
+83: 17 5
+156: 15 6
+7290: 6 8 6 15
+161011: 16 10 13
+192: 17 8 14
+21037: 9 7 18 13
+292: 11 6 16 20]]
+
+local function evaluate_mutation(operands, mutation)
+    local res = operands[1]
+    for i = 2, #operands do
+        if (mutation >> (i - 2)) & 1 ~= 0 then
+            res += operands[i]
+        else
+            res *= operands[i]
+        end
+    end
+    return res
+end
+
+local function validate_equation(equation)
+    local arr = equation:split(": ")
+    arr[1] = tonumber(arr[1])
+    arr[2] = arr[2]:split(" "):map(tonumber)
+    for i = 0, ((1 << (#arr[2] - 1)) - 1) do
+        if evaluate_mutation(arr[2], i) == arr[1] then
+            return arr[1]
+        end
+    end
+end
+
+local equations = input:split("\n")
+local sum = 0
+for equations as equation do
+    if res := validate_equation(equation) do
+        sum += res
+    end
+end
+print(sum)
