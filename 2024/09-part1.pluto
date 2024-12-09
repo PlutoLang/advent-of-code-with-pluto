@@ -1,0 +1,44 @@
+local input = [[2333133121414131402]]
+
+local blocks = {}
+local space = false
+local file_id = 0
+for input:split("") as x do
+    x = tonumber(x)
+    if space then
+        while x ~= 0 do
+            blocks:insert(-1)
+            x -= 1
+        end
+    else
+        while x ~= 0 do
+            blocks:insert(file_id)
+            x -= 1
+        end
+        ++file_id
+    end
+    space = not space
+end
+
+while true do
+    while blocks[#blocks] == -1 do
+        blocks:remove()
+    end
+
+    local free_idx = 0
+    for i = 1, #blocks do
+        if blocks[i] == -1 then
+            free_idx = i
+            break
+        end
+    end
+    if free_idx == 0 then break end
+    blocks[free_idx] = blocks[#blocks]
+    blocks:remove()
+end
+
+local sum = 0
+for i = 1, #blocks do
+    sum += (i - 1) * blocks[i]
+end
+print(sum)
