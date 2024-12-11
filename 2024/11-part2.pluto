@@ -1,0 +1,48 @@
+local input = [[125 17]]
+
+local function get_digits(x)
+    return math.floor(math.log(x, 10)) + 1
+end
+
+local function split_num(x, digits)
+    local middle = digits // 2
+    return math.tointeger(x // (10 ^ middle)), math.tointeger(x % (10 ^ middle))
+end
+
+local stones = {}
+for input:split(" ") as x do
+    x = tonumber(x)
+    stones[x] ??= 0
+    stones[x] += 1
+end
+
+for step = 1, 75 do
+    local stones_after = {}
+    for k, v in stones do
+        stones_after[k] = v
+    end
+    for value, count in stones do
+        if value == 0 then
+            stones_after[1] ??= 0
+            stones_after[1] += count
+            stones_after[0] -= count
+        else
+            local digits = get_digits(value)
+            if (digits & 1) == 0 then
+                local l, r = split_num(value, digits)
+                stones_after[l] ??= 0
+                stones_after[l] += count
+                stones_after[r] ??= 0
+                stones_after[r] += count
+                stones_after[value] -= count
+            else
+                local nval = value * 2024
+                stones_after[nval] ??= 0
+                stones_after[nval] += count
+                stones_after[value] -= count
+            end
+        end
+    end
+    stones = stones_after
+    print("After blinking "..step.." times, there's "..stones:reduce(|a, b| -> a + b, 0).." stones")
+end
